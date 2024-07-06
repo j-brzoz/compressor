@@ -1,6 +1,5 @@
 CC = gcc
-# -Werror
-CFLAGS = -Wall -Wextra -Wpedantic -O3
+CFLAGS = -Wall -Wextra -Wpedantic -Werror -O3
 OUT = comp.out
 SRC = main.c node.c heap.c
 OBJ = $(SRC:.c=.o)
