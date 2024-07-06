@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "node.h"
 #include "heap.h"
+#include "node.h"
 
 int main(int argc, char **argv){
 
@@ -21,11 +21,7 @@ int main(int argc, char **argv){
     	}
 	
 	// ---------- frequncies ----------
-	long long int frequencies[256];
-	for(int i = 0; i < 256; i++) {
-		frequencies[i] = 0;
-	}
-	
+	int frequencies[256] = {0};	
 	
 	// ---------- read ----------
 	unsigned char* buffer = malloc(16000 * sizeof* buffer);
@@ -46,32 +42,32 @@ int main(int argc, char **argv){
 	heap_t* heap = make_heap(8);
 	for(int i = 0;  i < 256; i++) {
 		if(frequencies[i] != 0) {
-			unique_chars += 1;
-			insert(heap, make_node(i, frequencies[i], NULL, NULL));
+			unique_chars += 1; 
+			unsigned short value[1] = {(unsigned short)i};
+			insert(heap, make_node(value, frequencies[i], NULL, NULL));
 		}
 	}
 
 	// ---------- results ----------
 	for(int i = 0; i < 256; i++) {
 		if (frequencies[i] != 0) {
-			printf("%d -> %lld\n", i, frequencies[i]);
+			printf("%d -> %d\n", i, frequencies[i]);
 		}
 	}
 
 	for(int i = 0; i < unique_chars; i++) {
-		printf("%c ", heap->array[i]->value);
+		printf("%c ", *(heap->array[i]->value));
 	}
 
-	node_t* min_node = extract_min_value(heap);
-	printf("\nextracted: %c\n", min_node->value);
-	
 	for(int i = 0; i < unique_chars-1; i++) {
-		printf("%c ", heap->array[i]->value);
+		printf("%c ", *(heap->array[i]->value));
 	}
 
-	// ---------- more clean up ----------
-	free(min_node);
-	free_heap(heap);
+	node_t* huffman_tree = make_huffman_tree(heap);
 
+	print_huffman_tree(huffman_tree);
+	// ---------- more clean up ----------
+	free_heap(heap);
+	free_node(huffman_tree);
 	return 0;
 }

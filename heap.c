@@ -15,7 +15,7 @@ void free_heap(heap_t* heap) {
 		if (heap->array != NULL) {
 			for(int i = 0; i < heap->n_of_elems; i++) {
 				if (heap->array[i] != NULL) {
-					free(heap->array[i]);
+					free_node(heap->array[i]);
 				}
 			}
 			free(heap->array);
