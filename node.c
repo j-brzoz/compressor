@@ -53,3 +53,31 @@ void print_huffman_tree(node_t* huffman_tree) {
 		print_huffman_tree(huffman_tree->right_child);
 	}
 }
+
+char* add_bit_to_code(const char* base_code, char bit) {
+	int length = strlen(base_code);
+	char* new_code = malloc(sizeof *new_code * (length + 2));
+	strcpy(new_code, base_code);
+	new_code[length] = bit;
+	new_code[length + 1] = '\0';
+	return new_code;
+}
+
+void generate_codes(char** codes, node_t* node, const char* code) {
+	if (node->left_child == NULL && node->right_child == NULL) {
+		codes[*(node->value)] = strdup(code); 
+        	return;
+	}
+	
+	if (node->left_child != NULL) {
+		char* left_code = add_bit_to_code(code, '0');
+        	generate_codes(codes, node->left_child, left_code);
+    		free(left_code);
+	}
+
+	if (node->right_child != NULL) {
+        	char* right_code = add_bit_to_code(code, '1');
+        	generate_codes(codes, node->right_child, right_code);
+		free(right_code);    
+	}
+}

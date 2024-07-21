@@ -54,18 +54,22 @@ int main(int argc, char **argv){
 			printf("%d -> %d\n", i, frequencies[i]);
 		}
 	}
-
 	for(int i = 0; i < unique_chars; i++) {
 		printf("%c ", *(heap->array[i]->value));
 	}
 
-	for(int i = 0; i < unique_chars-1; i++) {
-		printf("%c ", *(heap->array[i]->value));
-	}
 
+	// ---------- make codes ----------
 	node_t* huffman_tree = make_huffman_tree(heap);
-
-	print_huffman_tree(huffman_tree);
+	char* codes[256] = { NULL };
+	generate_codes(codes, huffman_tree, "");
+	for(int i = 0 ; i < 256; i++) {
+		if(codes[i] != NULL) {
+			printf("%d -> %s\n", i, codes[i]);
+			free(codes[i]);
+		}
+	}
+	
 	// ---------- more clean up ----------
 	free_heap(heap);
 	free_node(huffman_tree);
