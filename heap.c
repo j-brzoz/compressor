@@ -41,6 +41,7 @@ node_t* extract_min_value(heap_t* heap) {
 	
 	node_t* min_value = heap->array[0];
 	heap->array[0] = heap->array[heap->n_of_elems - 1];
+	heap->array[heap->n_of_elems - 1] = NULL;
 	heap->n_of_elems -= 1;
 	heap_down(heap);
 
@@ -74,10 +75,10 @@ void heap_down(heap_t* heap) {
 	int smallest_index = index;
 
 	while(index <= heap->n_of_elems - 1) {
-		if(left_child_index <= heap->n_of_elems - 1 && heap->array[left_child_index] < heap->array[smallest_index]) {
+		if(left_child_index <= heap->n_of_elems - 1 && heap->array[left_child_index]->frequency < heap->array[smallest_index]->frequency) {
 			smallest_index = left_child_index;
 		}	
-		if(right_child_index <= heap->n_of_elems - 1 && heap->array[right_child_index] < heap->array[smallest_index]) {
+		if(right_child_index <= heap->n_of_elems - 1 && heap->array[right_child_index]->frequency < heap->array[smallest_index]->frequency) {
 			smallest_index = right_child_index;
 		}
 		if(smallest_index != index) {
