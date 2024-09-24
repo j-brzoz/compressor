@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "heap.h"
 #include "node.h"
+#include "dictionary.h"
 
 int main(int argc, char **argv){
 
@@ -20,7 +21,7 @@ int main(int argc, char **argv){
 		return 1;
     	}
 	
-	// ---------- frequncies ----------
+	// ---------- frequencies ----------
 	int frequencies[256] = {0};	
 	
 	// ---------- read ----------
@@ -69,9 +70,13 @@ int main(int argc, char **argv){
 			free(codes[i]);
 		}
 	}
-	
+
+    char* dictionary = generate_dictionary(huffman_tree);
+    printf("%s\n", dictionary);
+
 	// ---------- more clean up ----------
 	free_heap(heap);
 	free_node(huffman_tree);
+    free(dictionary);
 	return 0;
 }
