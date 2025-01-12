@@ -1,7 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -Werror -O3
+# -pg
 OUT = comp.out
-SRC = main.c node.c heap.c dictionary.c
+SRC = main.c node.c heap.c dictionary.c encoder.c
 OBJ = $(SRC:.c=.o)
 
 comp: clean $(OUT)
@@ -13,6 +14,6 @@ $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.out *.o
+	rm -f *.out *. *.comp
 
 .PHONY: comp clean

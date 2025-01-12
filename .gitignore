@@ -53,3 +53,6 @@ dkms.conf
 
 # IDE
 .vscode/
+
+# compressed files
+*.comp

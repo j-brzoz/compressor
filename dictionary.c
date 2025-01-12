@@ -3,7 +3,7 @@
 
 char* generate_dictionary(node_t* huffman_tree) {
     char* dictionary = (char*)malloc(12);  // "00000000" + "000" + null terminator
-    strcpy(dictionary, "00000000" "000");
+    strcpy(dictionary, "00000000" "000"); // xor value + number of added bits
     
     node_t* node_stack[256];
     int idx = 0;
