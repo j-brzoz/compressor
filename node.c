@@ -1,7 +1,8 @@
 #include "node.h"
 #include "heap.h"
+#include "dictionary.h"
 
-node_t* make_node(unsigned short* value, int frequency, node_t* left_child, node_t* right_child) {
+node_t* make_node(unsigned char* value, int frequency, node_t* left_child, node_t* right_child) {
 	node_t* node = malloc(sizeof *node);
 	
 	if (value != NULL) {
@@ -46,11 +47,15 @@ node_t* make_huffman_tree(heap_t* heap) {
 	return extract_min_value(heap);
 }
 
-void print_huffman_tree(node_t* huffman_tree) {
+void print_huffman_tree(node_t* huffman_tree, char parent) {
 	if (huffman_tree != NULL) {
-		printf("%i ", huffman_tree->frequency);
-		print_huffman_tree(huffman_tree->left_child);
-		print_huffman_tree(huffman_tree->right_child);
+		if (huffman_tree->value != NULL) {
+			printf("%c %i %i\n", parent, huffman_tree->frequency, *(huffman_tree->value));
+		} else {
+			printf("%c NULL\n", parent);
+		}
+		print_huffman_tree(huffman_tree->left_child, 'l');
+		print_huffman_tree(huffman_tree->right_child, 'r');
 	}
 }
 
@@ -80,4 +85,26 @@ void generate_codes(char** codes, node_t* node, const char* code) {
         	generate_codes(codes, node->right_child, right_code);
 		free(right_code);    
 	}
+}
+
+node_t* make_huffman_tree_from_dict(dict_t* dictionary) {
+    char current_bit = dictionary->dictionary[dictionary->index_helper];
+    dictionary->index_helper++;
+    if (current_bit == '0') {
+		node_t* node = make_node(NULL, 0, make_huffman_tree_from_dict(dictionary), make_huffman_tree_from_dict(dictionary));
+        return node;
+    } else if (current_bit == '1') {
+        char* value_str = malloc(8 + 1);  // char length + null terminator
+        strncpy(value_str, dictionary->dictionary + dictionary->index_helper, 8);
+        value_str[8] = '\0';
+        unsigned char parsed = (unsigned char) strtol(value_str, NULL, 2);
+        free(value_str);
+      
+        dictionary->index_helper += 8;
+		node_t* node = make_node(&parsed, 0, NULL, NULL);
+        return node;
+    }
+    
+    // should never reach here
+    return NULL;
 }

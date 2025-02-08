@@ -1,9 +1,9 @@
 #include "encoder.h"
+#include "dictionary.h"
 
-#define BUFFER_LIMIT 8096
+#define BUFFER_LIMIT 8192
 
 
-// Compress function implementation
 void compress(char* dictionary, char* codes[256], FILE *input_file, FILE *output_file) {
 	unsigned char* xor_check = malloc(sizeof(unsigned char));
 	*xor_check = (unsigned char)'a';
@@ -16,8 +16,8 @@ void compress(char* dictionary, char* codes[256], FILE *input_file, FILE *output
 
     unsigned char bytes_from_input_file[BUFFER_LIMIT];
     int read;
-
     char* leftover_data = save_dictionary(dictionary, output_file, xor_check);
+
     if (leftover_data) {
         int leftover_length = strlen(leftover_data);
         memcpy(input_buffer, leftover_data, leftover_length);
@@ -58,7 +58,6 @@ void compress(char* dictionary, char* codes[256], FILE *input_file, FILE *output
 			iteration_counter++;
         }
         memmove(input_buffer, input_buffer + iteration_counter*8, input_buffer_length);
-
         fwrite(output_buffer, 1, output_buffer_length, output_file);
         output_buffer_length = 0;
     }
@@ -79,11 +78,15 @@ void compress(char* dictionary, char* codes[256], FILE *input_file, FILE *output
         fwrite(output_buffer, 1, output_buffer_length, output_file);
 		output_buffer_length = 0;
     }
-    write_xor_check(output_file, xor_check);
     fclose(input_file);
-    write_n_of_missing_bits(8 - input_buffer_length, output_file);
-	fclose(output_file);
+
+	// write xor
+	rewind(output_file);
+	fwrite(xor_check, 1, 1, output_file);
 	free(xor_check);
+
+	write_n_of_missing_bits(8 - input_buffer_length, output_file);
+	fclose(output_file);
 }
 
 // Write dictionary to output file
@@ -99,7 +102,7 @@ char* save_dictionary(char* dictionary, FILE *output_file, unsigned char* xor_ch
         *xor_check ^= output_buffer[output_buffer_length];
         output_buffer_length++;
 
-        memmove(rest_of_the_dictionary, rest_of_the_dictionary + 8, strlen(rest_of_the_dictionary) - 7);  // Move remaining bits forward
+        memmove(rest_of_the_dictionary, rest_of_the_dictionary + 8, strlen(rest_of_the_dictionary) + 1 - 8);  // Move remaining bits forward
 
         if (output_buffer_length == BUFFER_LIMIT) {
             fwrite(output_buffer, 1, output_buffer_length, output_file);
@@ -136,17 +139,20 @@ void write_n_of_missing_bits(int n_of_missing_bits, FILE *output_file) {
     unsigned char second_byte[1];
 	int read = fread(second_byte, 1, 1, output_file);
 	if (read != 1) {
-		printf("Something went wrong!\n");
+		fprintf(stderr, "Something went wrong!\n");
+		exit(1);
 	}
 
     char *binary_string = char_binary_code(second_byte[0], 8);
-    char *binary_string_of_n_of_missing_bits = char_binary_code(n_of_missing_bits, 3);
+    char *binary_string_of_n_of_missing_bits = char_binary_code((unsigned char)n_of_missing_bits, 3);
 
-    // Replace the first 3 bits of the original code with the last 3 bits of the nOfMissingBits code
-    strncpy(binary_string + 5, binary_string_of_n_of_missing_bits, 3);
+    // Replace the first 3 bits of the original code with the last 3 bits of the n_of_missing_bits code
+    strncpy(binary_string, binary_string_of_n_of_missing_bits, 3);
 
 	int value = (int)strtol(binary_string, NULL, 2);
 	unsigned char byte = (unsigned char)value;
+
+	fseek(output_file, 1, SEEK_SET);
 	fwrite(&byte, 1, 1, output_file);
 	free(binary_string);
 	free(binary_string_of_n_of_missing_bits);
@@ -156,11 +162,4 @@ void write_n_of_missing_bits(int n_of_missing_bits, FILE *output_file) {
 void get_eight_bits(char *input_buffer, char *eight_bits) {
     strncpy(eight_bits, input_buffer, 8);
     eight_bits[8] = '\0';
-}
-
-
-// Write xor_check value to the first byte
-void write_xor_check(FILE *output_file, unsigned char* xor_check) {
-	rewind(output_file);
-	fwrite(xor_check, 1, 1, output_file);
 }
