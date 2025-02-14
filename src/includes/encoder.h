@@ -27,7 +27,7 @@ char
 );
 
 
-// Write the first two bytes of the dictionary they aren't xored, 
+// Write the first two bytes of the dictionary they aren't xored,
 // that's why they are handled differently
 char
 *write_first_two_bytes(
