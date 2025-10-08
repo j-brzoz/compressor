@@ -281,11 +281,18 @@ check_if_valid_file(
 
 	// Get xor value
     unsigned char first_two_bytes[2];
-    size_t read = fread(first_two_bytes, 1, 2, file);
+    size_t read_first = fread(first_two_bytes, 1, 2, file);
+    if (read_first < 2) {
+        fprintf(stderr, "File too short: %s\n", filename);
+        fclose(file);
+        exit(1);
+    }
+
     unsigned char xor = first_two_bytes[0];
 
 	// Compute xor
     unsigned char bytes_from_input_file[BUFFER_LIMIT];
+    size_t read;
     while ((read = fread(bytes_from_input_file, 1, BUFFER_LIMIT, file)) > 0) {
         for (size_t i = 0; i < read; i++) {
             xor ^= bytes_from_input_file[i];

@@ -87,7 +87,6 @@ int main(int argc, char **argv) {
 		free(buffer);
 
 		// ---------- make a heap ----------
-		size_t unique_bytes = 0;
 		heap_t* heap = make_heap(8);
 		if (heap == NULL) {
             fprintf(stderr, "Error: Failed to create heap.\n");
@@ -99,8 +98,7 @@ int main(int argc, char **argv) {
 		// ---------- insert nodes ----------
 		for(size_t i = 0;  i < 256; i++) {
 			if(frequencies[i] != 0) {
-				unique_bytes += 1;
-				unsigned char value[1] = {(unsigned char)i};
+				const unsigned char value[1] = {(unsigned char)i};
 				insert(heap, make_node(value, frequencies[i], NULL, NULL));
 			}
 		}

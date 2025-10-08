@@ -103,7 +103,7 @@ double_heap_size(
 
 	heap->size *= 2;
 	node_t **new_array = realloc(heap->array, heap->size * sizeof **new_array);
-	if (!heap) {
+	if (!new_array) {
         fprintf(stderr, "Error with incresing heap size.\n");
         exit(EXIT_FAILURE);
     }

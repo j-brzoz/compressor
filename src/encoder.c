@@ -154,7 +154,11 @@ save_dictionary(
             output_buffer_length = 0;
         }
     }
-    fwrite(output_buffer, 1, output_buffer_length, output_file);
+
+    if (output_buffer_length > 0) {
+        fwrite(output_buffer, 1, output_buffer_length, output_file);
+    }
+    
     fflush(output_file);
 	free(eight_bits);
 	return rest_of_the_dictionary;
@@ -174,10 +178,10 @@ write_first_two_bytes(
         exit(EXIT_FAILURE);
     }
 
-	unsigned char output_buffer[2];
-    int output_buffer_length = 0;
-
     if (strlen(dictionary) >= BYTE_SIZE * 2) {
+        unsigned char output_buffer[2];
+        int output_buffer_length = 0;
+
         for (size_t  i = 0; i < 2; i++) {
             get_eight_bits(dictionary, eight_bits);
             output_buffer[output_buffer_length++] = (unsigned char)strtol(
