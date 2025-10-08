@@ -1,7 +1,6 @@
-#include "./includes/node.h"
-#include "./includes/heap.h"
-#include "./includes/dictionary.h"
-
+#include "node.h"
+#include "heap.h"
+#include "dictionary.h"
 
 // Make node with given parameters
 node_t *

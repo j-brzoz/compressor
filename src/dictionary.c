@@ -1,4 +1,4 @@
-#include "./includes/dictionary.h"
+#include "dictionary.h"
 
 #define BUFFER_LIMIT 8192
 

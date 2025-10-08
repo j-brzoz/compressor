@@ -1,4 +1,4 @@
-#include "./includes/decoder.h"
+#include "decoder.h"
 
 #define BUFFER_LIMIT 4096
 #define BYTE_SIZE 8

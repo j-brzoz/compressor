@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "./includes/heap.h"
-#include "./includes/node.h"
-#include "./includes/dictionary.h"
-#include "./includes/encoder.h"
-#include "./includes/decoder.h"
+#include "heap.h"
+#include "node.h"
+#include "dictionary.h"
+#include "encoder.h"
+#include "decoder.h"
 
 int main(int argc, char **argv) {
     if (argc != 4) {

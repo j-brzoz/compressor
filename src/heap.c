@@ -1,4 +1,4 @@
-#include "./includes/heap.h"
+#include "heap.h"
 
 
 // Make heap with given initial size

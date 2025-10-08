@@ -1,5 +1,5 @@
-#include "./includes/encoder.h"
-#include "./includes/dictionary.h"
+#include "encoder.h"
+#include "dictionary.h"
 
 #define BUFFER_LIMIT 8192
 #define BYTE_SIZE 8
