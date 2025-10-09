@@ -1,8 +1,15 @@
-#ifndef SRC_INCLUDES_DECODER_H_
-#define SRC_INCLUDES_DECODER_H_
+/**
+ * @file decoder.h
+ * @brief Header file for the Huffman decoding module.
+ *
+ * This file contains the function prototypes for decompressing a file that was
+ * encoded using the Huffman algorithm. It declares the functions needed to
+ * parse the compressed data and reconstruct the original file.
+ */
 
-#include "./dictionary.h"
-#include "./node.h"
+#ifndef _DECODER_H_
+#define _DECODER_H_
+
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -10,20 +17,52 @@
 #include <string.h>
 #include <unistd.h>
 
-//  Traverse the Huffman tree using the given code string
-const unsigned char *get_key(const node_t *root, const char *code,
+#include "dictionary.h"
+#include "node.h"
+
+/**
+ * @brief Traverse the Huffman tree using the given code string to find a
+ * character.
+ * @param root The root of the Huffman tree.
+ * @param code The binary code string to search for.
+ * @param code_length The length of the code to consider.
+ * @return A pointer to the decoded character if found, otherwise NULL.
+ */
+const unsigned char* get_key(const node_t* root, const char* code,
                              size_t code_length);
 
-// Process the bit–string buffer and write decoded bytes
-int analyze_buffer(const unsigned char *buffer, const node_t *root,
-                   FILE *output_file);
+/**
+ * @brief Process a buffer of binary string, decode it, and write the result to
+ * a file.
+ * @param buffer The input buffer containing the binary string.
+ * @param root The root of the Huffman tree.
+ * @param output_file The file to write the decoded bytes to.
+ * @return The number of remaining bits in the buffer that were not processed.
+ */
+int analyze_buffer(const unsigned char* buffer, const node_t* root,
+                   FILE* output_file);
 
-// Verify if unnecessary keys were added
-int check_if_added_unnecessary_keys(const node_t *root,
-                                    const char *binary_code);
+/**
+ * @brief Checks if padding zeros at the end of the file could be misinterpreted
+ * as valid codes.
+ * @param root The root of the Huffman tree.
+ * @param binary_code The binary string representing the padded bits.
+ * @return The number of characters that would be incorrectly decoded from the
+ * padding.
+ */
+int check_if_added_unnecessary_keys(const node_t* root,
+                                    const char* binary_code);
 
-// Decode input file using Huffman tree and write output
-void decompress(FILE *input_file, FILE *output_file, const dict_t *dictionary,
-                const node_t *root);
+/**
+ * @brief Decompresses an input file using the provided Huffman tree and
+ * dictionary.
+ * @param input_file The compressed file to read from.
+ * @param output_file The file to write the decompressed data to.
+ * @param dictionary The dictionary structure containing metadata from the
+ * compressed file.
+ * @param root The root of the Huffman tree used for decoding.
+ */
+void decompress(FILE* input_file, FILE* output_file, const dict_t* dictionary,
+                const node_t* root);
 
-#endif // SRC_INCLUDES_DECODER_H_
+#endif  // _DECODER_H_
